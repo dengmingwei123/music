@@ -3,8 +3,9 @@
     <ul>
       <li
         class="song-item"
-        v-for="item in songs"
+        v-for="(item,index) in songs"
         :key='item.id'
+        @click="playSongs(item,index)"
       >
         <div class="content">
           <h2 class="title">{{ item.name }}</h2>
@@ -28,6 +29,9 @@ export default {
   methods: {
     describe(item) {
       return `${item.singer}-${item.albumname}`
+    },
+    playSongs(item, index) {
+      this.$emit('getPlaySongs', item, index)
     }
   },
   watch: {

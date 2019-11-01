@@ -51,8 +51,11 @@
       :scrollEvents="scrollEvents"
       @getScroll="scroll"
     >
-      <song-list :songs="
-      songs">
+      <song-list
+        :songs="
+      songs"
+        @getPlaySongs='playSong'
+      >
       </song-list>
 
       <!-- 加载 -->
@@ -70,6 +73,8 @@ import Scroll from '@/base/scroll/Scroll.vue'
 import Loading from '@/base/loading/Loading.vue'
 // 引入dom方法
 import { prefixStyle } from '@/common/js/dom'
+// 引入map方法
+import { mapActions } from 'vuex'
 const transform = prefixStyle('transform')
 const backdorp = prefixStyle('backdorp')
 export default {
@@ -123,7 +128,14 @@ export default {
     // 实时获取滚动的距离
     scroll(pos) {
       this.scrollY = pos.y
-    }
+    },
+    // 获取播放的音乐
+    playSong(song, index) {
+      this.selectPlay({ list: this.songs, index })
+    },
+    ...mapActions([
+      'selectPlay'
+    ])
   },
   watch: {
     scrollY(newValue) {
