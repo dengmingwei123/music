@@ -1,11 +1,15 @@
 <template>
-  <div class='rank-detail'>
+  <transition
+    name='slide'
+    appear
+  >
     <music-list
       :title="title"
       :bgImage='bgImage'
       :songs="songs"
+      :isRank='isRank'
     ></music-list>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -21,7 +25,8 @@ export default {
   data() {
     return {
       filterSongs: [],
-      songs: []
+      songs: [],
+      isRank: true
     }
   },
   computed: {
@@ -81,6 +86,11 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.rank-detail {
+.slide-enter-active, .slide-leave-active {
+  transition: all 0.4s;
+}
+
+.slide-enter, .slide-leave-to {
+  transform: translate3d(100%, 0, 0);
 }
 </style>

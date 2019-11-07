@@ -10,6 +10,12 @@
         :key='item.id'
         @click="playSongs(item,index)"
       >
+        <div
+          class="rank"
+          v-if="isRank"
+        >
+          <span :class="rankCls(index)">{{ index+1 }}</span>
+        </div>
         <div class="content">
           <h2 class="title">{{ item.name }}</h2>
           <p class="describe">{{ describe(item) }}</p>
@@ -20,7 +26,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -33,6 +38,10 @@ export default {
       default() {
         return []
       }
+    },
+    isRank: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -41,14 +50,19 @@ export default {
     },
     playSongs(item, index) {
       this.$emit('getPlaySongs', item, index)
-    }
-  },
-  computed: {
-    ...mapGetters(['fullScreen'])
-  },
-  watch: {
-    fullScreen(newVal) {
-    }
+    },
+    rankCls(index) {
+      if (index === 0) {
+        return 'icon icon0'
+      } else if (index === 1) {
+        return 'icon icon1'
+      } else if (index === 2) {
+        return 'icon icon2'
+      } else {
+        return 'text'
+      }
+    },
+
   }
 }
 </script>
@@ -67,6 +81,37 @@ export default {
     box-sizing: border-box;
     height: 64px;
     font-size: $font-size-medium;
+
+    .rank {
+      width: 25px;
+      flex: 0 0 25px;
+      margin-right: 30px;
+      text-align: center;
+
+      .icon {
+        display: inline-block;
+        width: 25px;
+        height: 24px;
+        background-size: 100% 100%;
+
+        &.icon0 {
+          bg-image('./first');
+        }
+
+        &.icon1 {
+          bg-image('./second');
+        }
+
+        &.icon2 {
+          bg-image('./third');
+        }
+      }
+
+      .text {
+        font-size: 18px;
+        color: $color-theme;
+      }
+    }
 
     .content {
       flex: 1;

@@ -57,6 +57,7 @@
       <song-list
         :songs="
       songs"
+        :isRank='isRank'
         @getPlaySongs='playSong'
       >
       </song-list>
@@ -107,6 +108,10 @@ export default {
       default() {
         return []
       }
+    },
+    isRank: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

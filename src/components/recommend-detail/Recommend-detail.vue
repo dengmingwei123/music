@@ -85,8 +85,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@import '~@/common/stylus/variable.styl';
-
 .slide-enter-active, .slide-leave-active {
   transition: all 0.4s;
 }
