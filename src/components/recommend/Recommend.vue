@@ -1,6 +1,12 @@
 <template>
-  <div class="recommend">
-    <scroll :data='discList'>
+  <div
+    class="recommend"
+    ref='recommend'
+  >
+    <scroll
+      :data='discList'
+      ref='scroll'
+    >
       <!-- 轮播图 -->
       <div
         class="slider-wrapper"
@@ -18,6 +24,7 @@
             class="list-item"
             v-for="item in discList"
             :key="item.dissid"
+            @click='selectRecommend(item)'
           >
             <img
               v-lazy="item.imgurl"
@@ -35,6 +42,7 @@
         <loading v-if="!discList.length"></loading>
       </div>
     </scroll>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -47,7 +55,12 @@ import Slider from '@/base/slider/Slider.vue'
 import Scroll from '@/base/scroll/Scroll.vue'
 // 引入加载组件
 import Loading from '@/base/loading/Loading.vue'
+// 引入mixin方法
+import { playListMixin } from '@/common/js/mixin'
+// 引入map方法
+import { mapMutations } from 'vuex'
 export default {
+  mixins: [playListMixin],
   data() {
     return {
       slider: [],
@@ -59,6 +72,22 @@ export default {
     this._getDiscList()
   },
   methods: {
+    handlerPlaylist(playlist) {
+      let bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.recommend.style.bottom = bottom
+      this.$refs.scroll.refresh()
+    },
+    ...mapMutations({
+      setRecommend: 'SET_RECOMMEND'
+    }),
+    // 选中的推荐列表
+    selectRecommend(recommend) {
+      this.$router.push({
+        path: `/recommend/${recommend.dissid}`
+      })
+      this.setRecommend(recommend)
+    },
+    // 获取推荐列表数据
     _getRecommend() {
       getRecommend().then(res => {
         let { code, data: { slider } } = res
@@ -119,7 +148,7 @@ export default {
           font-size: $font-size-medium;
 
           .text-title {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
           }
 
           .text-content {

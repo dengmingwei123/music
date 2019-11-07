@@ -60,9 +60,12 @@ export default {
         this.$emit('getScroll', pos)
       }
     },
-    // 滚动到指定的地点
+    // 滚动到指定的元素
     scrollToElement(element, time) {
       this.$refs.scroll && this.$refs.scroll.scrollToElement(element, time)
+    },
+    scrollTo(x, y, time) {
+      this.$refs.scroll && this.$refs.scroll.scrollTo(x, y, time)
     }
   },
   watch: {

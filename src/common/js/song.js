@@ -3,17 +3,7 @@ import { ERR_OK } from '@/api/config'
 import { Base64 } from 'js-base64'
 
 export default class Song {
-  constructor({
-    id,
-    mid,
-    name,
-    albumname,
-    filename,
-    duration,
-    singer,
-    image,
-    url
-  }) {
+  constructor({ id, mid, name, albumname, duration, singer, image, url }) {
     this.id = id
     this.mid = mid
     this.name = name
@@ -85,6 +75,9 @@ export function processSongsUrl(songs) {
     if (res.code === ERR_OK) {
       let midUrlInfo = res.url_mid.data.midurlinfo
       midUrlInfo.forEach((info, index) => {
+        if (info.purl === '') {
+          return
+        }
         let song = songs[index]
         song.url = `http://dl.stream.qqmusic.qq.com/${info.purl}`
       })

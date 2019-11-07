@@ -129,6 +129,10 @@ export default {
         this.GroupHeight.push(height)
       }
     },
+    // 重新计算容器高度
+    refresh() {
+      this.$refs.scroll.refresh()
+    },
     // 获取实时滚动出去的距离
     scroll(pos) {
       this.scrollY = parseInt(pos.y)

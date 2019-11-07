@@ -96,6 +96,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           })
       })
 
+      // 获取歌曲播放url地址
       app.post('/api/getPurlUrl', bodyParser.json(), function(req, res) {
         const url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
 
@@ -109,6 +110,34 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           })
           .then(response => {
             res.json(response.data)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      })
+
+      // 获取推荐歌单详情页面
+      app.get('/api/getRecommendDisc', function(req, res) {
+        const url =
+          'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
+        axios
+          .get(url, {
+            headers: {
+              referer: 'https://c.y.qq.com/',
+              host: 'c.y.qq.com'
+            },
+            params: req.query
+          })
+          .then(response => {
+            let ret = response.data
+            if (typeof ret === 'string') {
+              const reg = /^\w+\(({.+})\)$/
+              const matches = ret.match(reg)
+              if (matches) {
+                JSON.parse(matches[1])
+              }
+            }
+            res.json(ret)
           })
           .catch(err => {
             console.log(err)

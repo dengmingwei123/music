@@ -18,9 +18,6 @@ import 'swiper/dist/css/swiper.css'
 // 引入vue-lazyload
 import VueLazyLoad from 'vue-lazyload'
 
-// 引入animated
-import Animated from 'animate.css'
-
 // 使用cube-ui
 Vue.use(Cube)
 // 使用vue-awesome-swiper
@@ -29,8 +26,6 @@ Vue.use(VueAwesomeSwiper /* { default global options } */)
 Vue.use(VueLazyLoad, {
   loading: require('@/common/image/logo.png')
 })
-// 使用animated
-Vue.use(Animated)
 
 Vue.config.productionTip = false
 

@@ -7,7 +7,10 @@ const state = {
   playlist: [],
   sequenceList: [],
   mode: playMode.sequence,
-  currentIndex: 0
+  currentIndex: 0,
+  currentPlayIndex: 0,
+  recommend: {},
+  rank: {}
 }
 
 export default state

@@ -25,7 +25,10 @@
         ref="playWrapper"
         v-show="songs.length>0"
       >
-        <div class="play">
+        <div
+          class="play"
+          @click="randomPlay"
+        >
           <i class="icon-play"></i>
           <span class="text">随机播放全部</span>
         </div>
@@ -75,9 +78,13 @@ import Loading from '@/base/loading/Loading.vue'
 import { prefixStyle } from '@/common/js/dom'
 // 引入map方法
 import { mapActions } from 'vuex'
+// 引入mixin方法
+import { playListMixin } from '@/common/js/mixin'
 const transform = prefixStyle('transform')
-const backdorp = prefixStyle('backdorp')
+const backdrop = prefixStyle('backdrop-filter')
+// console.log(backdorp)
 export default {
+  mixins: [playListMixin],
   data() {
     return {
       probeType: 3,
@@ -111,15 +118,25 @@ export default {
     this._setListTop()
   },
   methods: {
+    handlerPlaylist(playlist) {
+      let bottom = playlist.length > 0 ? 60 : 0
+      let height = this.$refs.musicList.clientHeight - this.bgImageHeight - bottom
+      this.$refs.scroll.$el.style.height = height + 'px'
+      this.$refs.scroll.refresh()
+    },
+    // 随机播放全部
+    randomPlay() {
+      this.randomPlaySum({ list: this.songs })
+    },
     // 设置列表的top值,设置列表可视区域的高度
     _setListTop() {
       if (this.$refs.scroll && this.$refs.bgImage && this.$refs.musicList) {
         // 背景图片的高
         this.bgImageHeight = this.$refs.bgImage.clientHeight
         // 获取整个容器的高
-        let height = this.$refs.musicList.clientHeight
+        let height = this.$refs.musicList.clientHeight - this.bgImageHeight
         // 设置音乐列表的可视区域高度
-        this.$refs.scroll.$el.style.height = height - this.bgImageHeight + 'px'
+        this.$refs.scroll.$el.style.height = height + 'px'
         // 设置音乐列表的top值
         this.$refs.scroll.$el.style.top = this.bgImageHeight + 'px'
         this.maxScroll = -this.bgImageHeight + this.$refs.title.clientHeight
@@ -134,7 +151,8 @@ export default {
       this.selectPlay({ list: this.songs, index })
     },
     ...mapActions([
-      'selectPlay'
+      'selectPlay',
+      'randomPlaySum'
     ])
   },
   watch: {
@@ -165,11 +183,11 @@ export default {
       } else {
         blur = Math.min(20 * parcent, 20)
       }
+      this.$refs.filter.style[backdrop] = `blur(${blur}px)`
 
       this.$refs.bgLayer.style[transform] = `translate3d(0,${transLateY}px,0)`
       this.$refs.bgImage.style.zIndex = zIndex
       this.$refs.bgImage.style[transform] = `scale(${scale})`
-      this.$refs.filter.style[backdorp] = `blur(${blur}px)`
     }
   },
   components: {

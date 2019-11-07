@@ -1,22 +1,22 @@
 <template>
   <div class='tab'>
     <router-link
-      to='recommend'
+      to='/recommend'
       tag="div"
       class="tab-item"
     ><span class="tab-text">推荐</span></router-link>
     <router-link
-      to='singer'
+      to='/singer'
       tag="div"
       class="tab-item"
     ><span class="tab-text">歌手</span></router-link>
     <router-link
-      to='rank'
+      to='/rank'
       tag="div"
       class="tab-item"
     ><span class="tab-text">排行</span></router-link>
     <router-link
-      to='search'
+      to='/search'
       tag="div"
       class="tab-item"
     ><span class="tab-text">搜索</span></router-link>

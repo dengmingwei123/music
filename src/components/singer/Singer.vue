@@ -1,8 +1,12 @@
 <template>
-  <div class='singer'>
+  <div
+    class='singer'
+    ref='singer'
+  >
     <list-view
       :singerList='singerList'
       @getSelectSinger="getSelectSinger"
+      ref='list'
     ></list-view>
     <router-view></router-view>
   </div>
@@ -19,9 +23,13 @@ import ListView from '@/base/listview/ListView.vue'
 // 引入vuex中的map语法
 import { mapMutations } from 'vuex'
 
+// 引入mixin方法
+import { playListMixin } from '@/common/js/mixin'
+
 const HOT_NAME = '热门'
 const HOT_SINGER_LEN = 10
 export default {
+  mixins: [playListMixin],
   data() {
     return {
       singerList: []
@@ -31,6 +39,11 @@ export default {
     this._getSingerList()
   },
   methods: {
+    handlerPlaylist(playlist) {
+      let bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.singer.style.bottom = bottom
+      this.$refs.list.refresh()
+    },
     ...mapMutations({
       setSinger: 'SET_SINGER'
     }),

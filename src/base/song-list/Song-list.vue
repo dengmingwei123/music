@@ -1,5 +1,8 @@
 <template>
-  <div class="song-list">
+  <div
+    class="song-list"
+    ref='songList'
+  >
     <ul>
       <li
         class="song-item"
@@ -17,7 +20,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
+  data() {
+    return {
+      current: null
+    }
+  },
   props: {
     songs: {
       type: Array,
@@ -34,8 +43,11 @@ export default {
       this.$emit('getPlaySongs', item, index)
     }
   },
+  computed: {
+    ...mapGetters(['fullScreen'])
+  },
   watch: {
-    songs(newValue) {
+    fullScreen(newVal) {
     }
   }
 }
@@ -46,6 +58,7 @@ export default {
 @import '~@/common/stylus/mixin.styl';
 
 .song-list {
+  position: relative;
   padding: 20px 30px;
 
   .song-item {

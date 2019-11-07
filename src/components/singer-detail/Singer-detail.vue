@@ -1,7 +1,6 @@
 <template>
   <transition
-    enter-active-class="animated fadeInRight"
-    leave-active-class="animated fadeOutRight"
+    name='slide'
     appear
   >
     <music-list
@@ -23,6 +22,7 @@ import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
+      filterSongs: [],
       songs: []
     }
   },
@@ -51,7 +51,7 @@ export default {
       let res = await getSingerDetail(this.singer.id)
       let { code, data: { list } } = res
       if (code === ERR_OK) {
-        this.songs = await processSongsUrl(this._normalSingerDetail(list))
+        this.filterSongs = await processSongsUrl(this._normalSingerDetail(list))
       }
     },
     // 格式化数据
@@ -65,10 +65,31 @@ export default {
       return ret
     }
   },
+  watch: {
+    // 处理不能播放的音乐
+    filterSongs(songs) {
+      // 创建新数组
+      let arr = []
+      for (let i = 0; i < songs.length; i++) {
+        if (songs[i].url) {
+          arr.push(songs[i])
+        }
+      }
+      this.songs = arr
+    }
+  },
   components: {
     MusicList
   }
 }
 </script>
 
-<style lang="stylus" scoped></style>
+<style lang="stylus" scoped>
+.slide-enter-active, .slide-leave-active {
+  transition: all 0.4s;
+}
+
+.slide-enter, .slide-leave-to {
+  transform: translate3d(100%, 0, 0);
+}
+</style>

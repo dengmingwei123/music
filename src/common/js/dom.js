@@ -21,7 +21,8 @@ export function prefixStyle(style) {
   if (vender === false) {
     return false
   }
-  if (vender === 'stransform') {
+
+  if (vender === 'standard') {
     return style
   }
 
