@@ -109,7 +109,7 @@ import Scroll from '@/base/scroll/Scroll'
 // 引入歌曲列表组件
 import SongList from '@/base/song-list/Song-list'
 // 引入提示框组件
-import TopTip from '@/base/top-tip/Top-Tip'
+import TopTip from '@/base/top-tip/Top-Tip.vue'
 export default {
   mixins: [searchMixin, songMixin],
   data() {
