@@ -31,7 +31,10 @@
         <span class='text'>随机播放全部</span>
       </div>
 
-      <div class="user-list-wrapper">
+      <div
+        class="user-list-wrapper"
+        ref='userListWrapper'
+      >
         <!-- 我喜欢的 -->
         <scroll
           :data='myLoveSongList'
@@ -66,7 +69,7 @@
 // 引入开关组件
 import Switches from '@/base/switches/Switches'
 // 引入mixin
-import { songMixin } from '@/common/js/mixin'
+import { songMixin, playListMixin } from '@/common/js/mixin'
 // 引入滚动组件
 import Scroll from '@/base/scroll/Scroll'
 // 引入歌曲组件
@@ -76,7 +79,7 @@ import { mapGetters, mapActions } from 'vuex'
 // 引入song方法,创建歌曲对象
 import Song from '@/common/js/song'
 export default {
-  mixins: [songMixin],
+  mixins: [songMixin, playListMixin],
   data() {
     return {
       isShow: true,
@@ -104,6 +107,12 @@ export default {
   },
   methods: {
     ...mapActions(['randomPlaySum']),
+    handlerPlaylist(playList) {
+      let bottom = playList.length > 0 ? '60px' : ''
+      this.$refs.userListWrapper.style.bottom = bottom
+      this.$refs.myLoveSongWrapper.refresh()
+      this.$refs.playHistoryWrapper.refresh()
+    },
     // 随机播放全部
     randomPlay() {
       let list = []
