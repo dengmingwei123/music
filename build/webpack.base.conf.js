@@ -84,12 +84,6 @@ module.exports = {
       }
     ]
   },
-  externals: {
-    // vue表示import Vue from 'vue'
-    // Vue表示的全局变量中的Vue
-    vue: 'Vue',
-    'vue-router': 'VueRouter'
-  },
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue
     // source contains it (although only uses it if it's native).
