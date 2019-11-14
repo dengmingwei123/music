@@ -27,7 +27,7 @@ export function getLyric(mid) {
 }
 
 export function getSongsUrl(songs) {
-  const url = '/api/getPurlUrl'
+  const url = debug ? '/api/getPurlUrl' : 'http://www.dengmingwei.com/music/api/getPurlUrl'
 
   let mids = []
   let types = []
