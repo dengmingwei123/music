@@ -9,7 +9,14 @@ import store from './store'
 import '@/common/stylus/index.styl'
 
 // 引入cube-ui
-import Cube from 'cube-ui'
+// import Cube from 'cube-ui'
+import {
+  /* eslint-disable no-unused-vars */
+  Style,
+  Scroll,
+  Dialog,
+  Toast
+} from 'cube-ui'
 
 // 引入vue-awesonme-swiper
 import VueAwesomeSwiper from 'vue-awesome-swiper'
@@ -19,7 +26,9 @@ import 'swiper/dist/css/swiper.css'
 import VueLazyLoad from 'vue-lazyload'
 
 // 使用cube-ui
-Vue.use(Cube)
+Vue.use(Scroll)
+Vue.use(Dialog)
+Vue.use(Toast)
 // 使用vue-awesome-swiper
 Vue.use(VueAwesomeSwiper /* { default global options } */)
 // 使用vue-lazyload

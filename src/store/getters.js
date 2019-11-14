@@ -19,3 +19,9 @@ export const currentSong = state => {
 export const recommend = state => state.recommend
 
 export const rank = state => state.rank
+
+export const searchHistory = state => state.searchHistory
+
+export const playHistory = state => state.playHistory
+
+export const myLoveSongList = state => state.myLoveSongList

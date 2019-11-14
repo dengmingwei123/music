@@ -25,5 +25,30 @@ export default {
 }
 </script>
 
-<style>
+<style lang="stylus">
+@import '~@/common/stylus/variable.styl';
+
+.cube-dialog {
+  .cube-popup-container {
+    .cube-popup-content {
+      .cube-dialog-main {
+        border-radius: 10px;
+        background-color: $color-highlight-background;
+
+        .cube-dialog-confirm {
+          .cube-dialog-title {
+            font-size: 18px;
+            color: $color-text-l;
+          }
+
+          .cube-dialog-btns {
+            .cube-dialog-btn {
+              background-color: $color-highlight-background;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 </style>

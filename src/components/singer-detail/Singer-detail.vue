@@ -45,7 +45,7 @@ export default {
     async _getSingerDetail() {
       // 如果在当前页面刷新时,回退到之前页面
       if (!this.singer.id) {
-        this.$router.push('/singer')
+        this.$router.back()
         return
       }
       let res = await getSingerDetail(this.singer.id)

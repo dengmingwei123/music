@@ -1,8 +1,10 @@
 import { PARAMS } from './config'
 import axios from 'axios'
 
+const debug = process.env.NODE_ENV !== 'production'
+
 export function getRecommend() {
-  let url = '/api/getRecommend'
+  const url = debug ? '/api/getRecommend' : 'http://www.dengmingwei.com/music/api/getRecommend'
   let data = Object.assign({}, PARAMS, {
     platform: 'h5',
     uin: 0,
@@ -21,7 +23,7 @@ export function getRecommend() {
 }
 
 export function getDiscList() {
-  let url = '/api/getDiscList'
+  const url = debug ? '/api/getDiscList' : 'http://www.dengmingwei.com/music/api/getDiscList'
   let data = Object.assign({}, PARAMS, {
     platform: 'yqq',
     hostUin: 0,
@@ -45,7 +47,7 @@ export function getDiscList() {
 }
 
 export function getRecommendDisc(id) {
-  let url = '/api/getRecommendDisc'
+  const url = debug ? '/api/getRecommendDisc' : 'http://www.dengmingwei.com/music/api/getRecommendDisc'
   let data = Object.assign({}, PARAMS, {
     disstid: id,
     type: 1,

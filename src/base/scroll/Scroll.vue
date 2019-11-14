@@ -4,6 +4,8 @@
     :options="options"
     :scrollEvents="scrollEvents"
     class="scroll-list-wrap"
+    @pulling-up="onPullingUp"
+    @pulling-down="onPullingDown"
     @scroll="scroll"
   >
     <slot></slot>
@@ -34,6 +36,14 @@ export default {
       default() {
         return []
       }
+    },
+    isOnPullingUp: {
+      type: Boolean,
+      default: false
+    },
+    isOnPullingDown: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -43,8 +53,8 @@ export default {
         click: this.click,
         probeType: this.probeType,
         scrollbar: false,
-        pullDownRefresh: false,
-        pullUpLoad: false
+        pullUpLoad: this.isOnPullingUp,
+        pullDownRefresh: this.isOnPullingDown
       }
     }
   },
@@ -64,8 +74,22 @@ export default {
     scrollToElement(element, time) {
       this.$refs.scroll && this.$refs.scroll.scrollToElement(element, time)
     },
+    // 滚动到指定的区域
     scrollTo(x, y, time) {
       this.$refs.scroll && this.$refs.scroll.scrollTo(x, y, time)
+    },
+    // 上拉加载
+    onPullingUp() {
+      // 出发父组件的方法
+      this.$emit('onPullingUp')
+    },
+    // 下拉刷新
+    onPullingDown() {
+      this.$emit('onPullingDown')
+    },
+    // 结束下拉刷新,上拉加载
+    forceUpdate() {
+      this.$refs.scroll && this.$refs.scroll.forceUpdate()
     }
   },
   watch: {

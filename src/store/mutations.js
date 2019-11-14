@@ -27,6 +27,15 @@ const mutations = {
   },
   [types.SET_RANK](state, rank) {
     state.rank = rank
+  },
+  [types.SET_SEARCH_HISTORY](state, history) {
+    state.searchHistory = history
+  },
+  [types.SET_PLAY_HISTORY](state, playHistory) {
+    state.playHistory = playHistory
+  },
+  [types.SET_MY_LOVE_SONG_LIST](state, myLoveSongList) {
+    state.myLoveSongList = myLoveSongList
   }
 }
 

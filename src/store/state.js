@@ -1,4 +1,5 @@
 import { playMode } from '@/common/js/config'
+import { loadSearch, loadPlayHistory, loadMyLoveSongList } from '@/common/js/cache'
 
 const state = {
   singer: {},
@@ -7,10 +8,13 @@ const state = {
   playlist: [],
   sequenceList: [],
   mode: playMode.sequence,
-  currentIndex: 0,
+  currentIndex: -1,
   currentPlayIndex: 0,
   recommend: {},
-  rank: {}
+  rank: {},
+  searchHistory: loadSearch(),
+  playHistory: loadPlayHistory(),
+  myLoveSongList: loadMyLoveSongList()
 }
 
 export default state

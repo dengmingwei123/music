@@ -29,7 +29,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   devServer: {
     before(app) {
       // 获取轮播图
-      app.get('/api/getRecommend', function(req, res) {
+      app.get('/api/getRecommend', function (req, res) {
         const url =
           'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg'
         axios
@@ -49,7 +49,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       })
 
       // 获取推荐歌单列表
-      app.get('/api/getDiscList', function(req, res) {
+      app.get('/api/getDiscList', function (req, res) {
         const url =
           'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
         axios
@@ -69,7 +69,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       })
 
       // 获取歌曲
-      app.get('/api/lyric', function(req, res) {
+      app.get('/api/lyric', function (req, res) {
         const url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
 
         axios
@@ -97,7 +97,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       })
 
       // 获取歌曲播放url地址
-      app.post('/api/getPurlUrl', bodyParser.json(), function(req, res) {
+      app.post('/api/getPurlUrl', bodyParser.json(), function (req, res) {
         const url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
 
         axios
@@ -117,7 +117,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       })
 
       // 获取推荐歌单详情页面
-      app.get('/api/getRecommendDisc', function(req, res) {
+      app.get('/api/getRecommendDisc', function (req, res) {
         const url =
           'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
         axios
@@ -138,6 +138,26 @@ const devWebpackConfig = merge(baseWebpackConfig, {
               }
             }
             res.json(ret)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      })
+
+      // 获取查询结果
+      app.get('/api/getSearchResult', function (req, res) {
+        const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
+
+        axios
+          .get(url, {
+            headers: {
+              referer: 'https://c.y.qq.com/',
+              host: 'c.y.qq.com'
+            },
+            params: req.query
+          })
+          .then(response => {
+            res.json(response.data)
           })
           .catch(err => {
             console.log(err)
@@ -222,3 +242,4 @@ module.exports = new Promise((resolve, reject) => {
     }
   })
 })
+

@@ -3,7 +3,10 @@
     <div class="title">
       <h1>我的音乐</h1>
     </div>
-    <div class="user">
+    <div
+      class="user"
+      @click='openUser'
+    >
       <i class="icon-mine"></i>
     </div>
   </div>
@@ -14,6 +17,11 @@ export default {
   data() {
     return {
 
+    }
+  },
+  methods: {
+    openUser() {
+      this.$router.push('/user')
     }
   }
 }

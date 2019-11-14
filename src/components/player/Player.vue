@@ -156,7 +156,8 @@
             <!-- 加入收藏 -->
             <div class="icon i-right">
               <i
-                class="icon-not-favorite"
+                :class="myLoveSongIcon()"
+                class='current'
                 @click="collectList"
               ></i>
             </div>
@@ -199,11 +200,15 @@
             ></i>
           </progress-circle>
         </div>
-        <div class="control">
+        <div
+          class="control"
+          @click='showPlayList'
+        >
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
+    <play-list ref='playList'></play-list>
     <audio
       :src="currentSong.url"
       ref="audio"
@@ -216,8 +221,6 @@
 </template>
 
 <script>
-// 引入vuex的map语法
-import { mapGetters, mapMutations } from 'vuex'
 // 引入动画组件
 import animations from 'create-keyframe-animation'
 // 引入滚动组件
@@ -228,15 +231,20 @@ import ProgressBar from '@/base/progress-bar/Progress-bar'
 import ProgressCircle from '@/base/progress-circle/Progress-circle'
 // 引入模式的配置文件
 import { playMode } from '@/common/js/config'
-// 引入打乱数组的函数
-import { shuffle } from '@/common/js/util'
 // 引入处理兼容函数
 import { prefixStyle } from '@/common/js/dom'
 // 引入处理歌词的方法
 import Lyric from 'lyric-parser'
+// 引入开始列表组件
+import PlayList from '@/components/play-list/Play-list'
+// 引入播放器mixin
+import { playerMixin } from '@/common/js/mixin'
+// 引入map语法
+import { mapActions } from 'vuex'
 const transform = prefixStyle('transform')
 const transitionDuration = prefixStyle('transitionDuration')
 export default {
+  mixins: [playerMixin],
   data() {
     return {
       playSongFlag: false,
@@ -249,15 +257,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'playlist',
-      'fullScreen',
-      'currentSong',
-      'playing',
-      'currentIndex',
-      'mode',
-      'sequenceList'
-    ]),
     playIcon() {
       return this.playing ? 'icon-pause' : 'icon-play'
     },
@@ -273,23 +272,12 @@ export default {
     percent() {
       return this.currentTime / this.currentSong.duration
     },
-    iconMode() {
-      return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
-    },
     currentLyricTxt() {
       return this.currentLyric.lines[this.currentLineNum].txt
     }
   },
   methods: {
-    ...mapMutations({
-      isFullScreen: 'SET_FULL_SCREEN',
-      setPlayIng: 'SET_PLAYING_STATE',
-      setCurrentIndex: 'SET_CURRENT_INDEX',
-      setCurrentPlayIndex: 'SET_CURRENTPLAY_INDEX',
-      setPlayMode: 'SET_PLAY_MODE',
-      setSequenceList: 'SET_SEQUENCE_LIST',
-      setPlayList: 'SET_PLAYLIST'
-    }),
+    ...mapActions(['savePlaySongHistory']),
     // 进入页面起使动画
     enter(el, done) {
       const { x, y, scale } = this._getPosAndScale()
@@ -372,33 +360,9 @@ export default {
     magnify() {
       this.isFullScreen(true)
     },
-    // 加入收藏列表
-    collectList() {
-      let arr = []
-      // 判断是否创建了收藏数组
-      if (localStorage.getItem('collectList')) {
-        let jsonString = localStorage.getItem('collectList')
-        arr = JSON.parse(jsonString)
-        // 判断是否在收藏列表中
-        if (arr.find(v => v.id === this.currentSong.id)) {
-          // 清除当前这个
-          arr = arr.filter(v => {
-            return v.id !== this.currentSong.id
-          })
-          this.collect = false
-        } else {
-          arr.push(this.currentSong)
-          this.collect = true
-        }
-      } else {
-        arr.push(this.currentSong)
-        this.collect = true
-      }
-      localStorage.setItem('collectList', JSON.stringify(arr))
-    },
     // 播放音乐
     player() {
-      this.playing ? this.setPlayIng(false) : this.setPlayIng(true)
+      this.setPlayIng(!this.playing)
       if (this.currentLyric) {
         this.currentLyric.togglePlay()
       }
@@ -459,6 +423,7 @@ export default {
     // 控制上一首下一首的节流阀
     playFlag() {
       this.playSongFlag = true
+      this.savePlaySongHistory(this.currentSong)
     },
     // 歌曲加载失败
     error() {
@@ -490,40 +455,21 @@ export default {
         this.setPlayIng(true)
       }
     },
-    // 改变播放状态
-    changeMode() {
-      let mode = (this.mode + 1) % 3
-      this.setPlayMode(mode)
-      let list = null
-      // 是否随机播放
-      if (this.mode === playMode.random) {
-        // 打乱列表
-        list = shuffle(this.sequenceList)
-      } else {
-        // 单曲和顺序播放
-        list = this.sequenceList
-      }
-      this.currentSongIndex(list)
-      this.setPlayList(list)
-    },
-    // 找到当前播放歌曲的索引
-    currentSongIndex(list) {
-      let index = list.findIndex(v => {
-        return this.currentSong === v
-      })
-      this.setCurrentIndex(index)
-    },
     // 获取歌词
     async _getLyric() {
       let lyric = await this.currentSong.getLyric()
       try {
         this.currentLyric = new Lyric(lyric, this.handlerLyric)
+        if (this.currentLyric.lines.length === 0) {
+          this.currentLyric.lines[0].txt = '暂无歌词'
+        }
         if (this.playing) {
           this.currentLyric.play()
         }
       } catch (err) {
         this.currentLyric = null
         this.currentLineNum = 0
+        this.currentTime = 0
       }
     },
     handlerLyric({ lineNum, txt }) {
@@ -602,6 +548,25 @@ export default {
       this.$refs.lyricList.$el.style[transitionDuration] = `${time}ms`
       this.$refs.middleL.style.opacity = percent
       this.$refs.lyricList.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
+    },
+    // 显示音乐列表
+    showPlayList() {
+      this.$refs.playList.showPlayList()
+    },
+    // 我喜欢音乐的Icon
+    myLoveSongIcon() {
+      let Flag = this.myLoveSongList.some(item => {
+        return item.id === this.currentSong.id
+      })
+      if (Flag) {
+        return 'icon-favorite'
+      } else {
+        return 'icon-not-favorite'
+      }
+    },
+    // 加入收藏列表
+    collectList(item) {
+      this.saveMyLoveSongList(this.currentSong)
     }
   },
   watch: {
@@ -611,25 +576,33 @@ export default {
       }
       if (this.currentLyric) {
         this.currentLyric.stop()
+        // 清空数据
+        this.currentLyric = null
+        this.currentTime = 0
+        this.currentLineNum = 0
       }
       setTimeout(() => {
-        this.setPlayIng(true)
-        this.$refs.audio.play()
-        this._getLyric()
+        if (this.playing) {
+          this.$refs.audio.play()
+          this._getLyric()
+        } else {
+          this.$refs.audio.pause()
+        }
       }, 1000)
     },
     playing(newPlaying) {
-      this.$nextTick(() => {
+      setTimeout(() => {
         // 获取播放器
         let audio = this.$refs.audio
         newPlaying ? audio.play() : audio.pause()
-      })
+      }, 20)
     }
   },
   components: {
     Scroll,
     ProgressBar,
-    ProgressCircle
+    ProgressCircle,
+    PlayList
   }
 }
 </script>
@@ -884,6 +857,12 @@ export default {
 
         .i-right {
           text-align: left;
+
+          .icon-favorite {
+            &.current {
+              color: $color-sub-theme;
+            }
+          }
         }
 
         .i-center {
@@ -921,7 +900,7 @@ export default {
     bottom: 0;
     width: 100%;
     height: 60px;
-    z-index: 180;
+    z-index: 50;
     display: flex;
     align-items: center;
     background-color: $color-highlight-background;

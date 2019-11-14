@@ -17,7 +17,6 @@
     }
   },
   "dependencies": {
-    "animate.css": "^3.7.2",
     "axios": "^0.19.0",
     "create-keyframe-animation": "^0.1.0",
     "cube-ui": "^1.12.32",
